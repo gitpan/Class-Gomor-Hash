@@ -1,26 +1,28 @@
 package Class::Gomor::Hash;
 
-# $Date: 2005/01/17 21:25:20 $
-# $Revision: 1.2 $
+# $Date: 2005/02/05 13:04:45 $
+# $Revision: 1.5 $
 
 use strict;
 use warnings;
 
-our $VERSION = '0.20';
+our $VERSION = '0.21';
 
 require Exporter;
 our @ISA = qw(Exporter);
 
 use Carp;
 
-our $Debug = 0;
-our @EXPORT_OK = qw($Debug);
+our $Debug   = 0;
+our $NoCheck = 0;
+our @EXPORT_OK = qw($Debug $NoCheck);
 
 sub new {
    my $invocant = shift;
    my $class    = ref($invocant) || $invocant;
 
-   $class->checkParams({ @_ }, [ @{$class->getAccessors} ]);
+   $class->checkParams({ @_ }, [ @{$class->getAccessors} ])
+      unless $NoCheck;
 
    bless({ @_ }, $class);
 }
@@ -209,6 +211,14 @@ The loss in speed by validating all attributes is quite negligeable on a decent 
 
 =over 4
 
+=item B<$NoCheck>
+
+Import it in your namespace like this:
+
+use Class::Gomor::Hash qw($NoCheck);
+
+If you want to disable B<checkParams> to improve speed once your program is frozen, you can use this variable. Set it to 1 to disable parameter checking.
+
 =item B<$Debug>
 
 Import it in your namespace like this:
@@ -225,7 +235,7 @@ This variable is used by the B<debugPrint> method.
 
 =item B<new> [ (hash) ]
 
-Object constructor. This is where user passed attributes (hash argument) are checked against valid attributes (gathered by B<getAccessors> method). Valid attributes are those that exists (doh!), and have not an undef value.
+Object constructor. This is where user passed attributes (hash argument) are checked against valid attributes (gathered by B<getAccessors> method). Valid attributes are those that exists (doh!), and have not an undef value. The default is to check this, you can avoid it by setting <$NoCheck> global variable.
 
 =item B<checkParams> (scalar, scalar)
 
@@ -237,7 +247,7 @@ A recursive method. You pass a class in an array reference as an argument, and t
 
 =item B<getAccessors>
 
-This method returns available attributes for calling class. It uses B<getIsaTree> to search recursively in class hierarchy. It then returns an array reference with all possible attributes.
+This method returns available attributes for caller's class. It uses B<getIsaTree> to search recursively in class hierarchy. It then returns an array reference with all possible attributes.
 
 =item B<buildAccessorsScalar> (scalar)
 
@@ -249,7 +259,7 @@ Accessor creation method. Takes an array reference containing all array attribut
 
 =item B<debugPrint> (scalar, scalar)
 
-First argument is a debug level. It is compared with global B<$Debug>, and if it is less than it, the second argument (a message string) is displayed. This method exists since I use it, maybe you will not like it.
+First argument is a debug level. It is compared with global B<$Debug>, and if it is less than it, the second argument (a message string) is displayed. This method exists because I use it, maybe you will not like it.
 
 =back
 

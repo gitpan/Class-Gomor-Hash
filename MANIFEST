@@ -1,5 +1,9 @@
+Changes
 Copying
 Hash.pm
 MANIFEST
 META.yml
 Makefile.PL
+README
+t/01-use.t
+t/02-nocheck.t
