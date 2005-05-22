@@ -1,12 +1,13 @@
-package Class::Gomor::Hash;
+#
+# $Id: Hash.pm,v 1.7 2005/05/22 20:00:52 gomor Exp $
+#
 
-# $Date: 2005/02/05 13:04:45 $
-# $Revision: 1.5 $
+package Class::Gomor::Hash;
 
 use strict;
 use warnings;
 
-our $VERSION = '0.21';
+our $VERSION = '0.22';
 
 require Exporter;
 our @ISA = qw(Exporter);
@@ -21,7 +22,7 @@ sub new {
    my $invocant = shift;
    my $class    = ref($invocant) || $invocant;
 
-   $class->checkParams({ @_ }, [ @{$class->getAccessors} ])
+   $class->checkParams({ @_ }, $class->getAccessors)
       unless $NoCheck;
 
    bless({ @_ }, $class);
@@ -40,11 +41,9 @@ sub checkParams {
       }
       unless ($valid) {
          croak("$self: invalid parameter: `$u'");
-         return undef;
       }
       unless ($exists) {
          croak("$self: parameter is undef: `$u'");
-         return undef;
       }
    }
 
